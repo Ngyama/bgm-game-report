@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ year }} Bangumi Yearly Report</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: 'Segoe UI', 'PingFang SC', 'Microsoft Yahei', sans-serif;
+      }
+
+      body {
+        margin: 0;
+        padding: 32px;
+        background: #f7f7fb;
+        color: #111827;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 32px;
+        padding: 48px;
+        box-shadow: 0 30px 80px rgba(15, 23, 42, 0.12);
+        border: 1px solid rgba(99, 102, 241, 0.1);
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 48px;
+      }
+
+      header h1 {
+        font-size: 40px;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, #ec4899, #6366f1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      header p {
+        margin: 4px 0;
+        color: #6b7280;
+      }
+
+      .months {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+      }
+
+      .month-block {
+        display: grid;
+        grid-template-columns: 100px 1fr;
+        gap: 16px;
+        align-items: start;
+      }
+
+      .month-label {
+        font-size: 54px;
+        font-weight: 700;
+        color: rgba(148, 163, 184, 0.8);
+        letter-spacing: 2px;
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 16px;
+      }
+
+      .card {
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        background: #fff;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      }
+
+      .card img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        display: block;
+      }
+
+      .card-body {
+        padding: 12px 14px 16px;
+      }
+
+      .title {
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 1.3;
+        margin-bottom: 4px;
+      }
+
+      .subtitle {
+        font-size: 12px;
+        color: #94a3b8;
+        margin-bottom: 12px;
+      }
+
+      .meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        color: #cbd5f5;
+        color: #94a3b8;
+      }
+
+      footer {
+        text-align: right;
+        margin-top: 32px;
+        font-size: 12px;
+        color: #94a3b8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>{{ year }} · Gaming Year</h1>
+        <p>@{{ username }} · 共标记 {{ total }} 款游戏</p>
+        <p>生成时间：{{ generated_at }}</p>
+      </header>
+
+      <section class="months">
+        {% for month in months %}
+        <div class="month-block">
+          <div class="month-label">{{ month.label }}</div>
+          <div class="cards">
+            {% for item in month.items %}
+            <div class="card">
+              <img src="{{ item.image }}" alt="{{ item.name or item.name_cn }}" />
+              <div class="card-body">
+                <div class="title">{{ item.name_cn or item.name }}</div>
+                <div class="subtitle">
+                  {% if item.name != item.name_cn %}
+                    {{ item.name }}
+                  {% endif %}
+                </div>
+                <div class="meta">
+                  <span>{{ item.updated_at.strftime("%m-%d") }}</span>
+                  <span>评分 {{ item.score }}</span>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </section>
+
+      <footer>Bangumi Annual Report Experimental Exporter</footer>
+    </div>
+  </body>
+</html>
+
