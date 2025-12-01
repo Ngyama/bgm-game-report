@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { BangumiCollectionItem } from '../types/bangumi';
 import { format } from 'date-fns';
-import { Eye, EyeOff, Star } from 'lucide-react';
+import { Eye, EyeOff, Star, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 interface GameCardProps {
@@ -12,19 +12,70 @@ export function GameCard({ item }: GameCardProps) {
   const { subject, rate, updated_at } = item;
   const date = new Date(updated_at);
   const [censored, setCensored] = useState(false);
+  const [recommended, setRecommended] = useState(false);
+  const [notRecommended, setNotRecommended] = useState(false);
+
+  const handleRecommend = () => {
+    setRecommended(prev => !prev);
+    if (!recommended) {
+      setNotRecommended(false); // 取消不推荐
+    }
+  };
+
+  const handleNotRecommend = () => {
+    setNotRecommended(prev => !prev);
+    if (!notRecommended) {
+      setRecommended(false); // 取消推荐
+    }
+  };
 
   return (
-    <div className="bg-white dark:bg-zinc-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full border border-zinc-100 dark:border-zinc-700">
+    <div className={cn(
+      "bg-white dark:bg-zinc-800 rounded-md shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col h-full border",
+      recommended && "border-red-500 border-2",
+      notRecommended && "border-black dark:border-zinc-100 border-2",
+      !recommended && !notRecommended && "border-zinc-100 dark:border-zinc-700"
+    )}>
       <div className="relative aspect-[3/4] overflow-hidden group">
-        <button
-          type="button"
-          onClick={() => setCensored(prev => !prev)}
-          className="absolute top-2 left-2 z-10 bg-white/90 dark:bg-zinc-900/80 text-zinc-700 dark:text-zinc-200 rounded-full p-1.5 shadow-sm border border-zinc-100 dark:border-zinc-700 hover:shadow-md transition-all"
-          data-export-ignore="true"
-          aria-label={censored ? 'Reveal cover' : 'Hide cover'}
-        >
-          {censored ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-        </button>
+        <div className="absolute top-1 left-1 z-10 flex flex-col gap-1">
+          <button
+            type="button"
+            onClick={() => setCensored(prev => !prev)}
+            className="bg-white/90 dark:bg-zinc-900/80 text-zinc-700 dark:text-zinc-200 rounded-full p-0.5 shadow-sm border border-zinc-100 dark:border-zinc-700 hover:shadow-md transition-all"
+            data-export-ignore="true"
+            aria-label={censored ? 'Reveal cover' : 'Hide cover'}
+          >
+            {censored ? <Eye className="w-2.5 h-2.5" /> : <EyeOff className="w-2.5 h-2.5" />}
+          </button>
+          <button
+            type="button"
+            onClick={handleRecommend}
+            className={cn(
+              "rounded-full p-0.5 shadow-sm border hover:shadow-md transition-all",
+              recommended 
+                ? "bg-red-500 text-white border-red-500" 
+                : "bg-white/90 dark:bg-zinc-900/80 text-zinc-700 dark:text-zinc-200 border-zinc-100 dark:border-zinc-700"
+            )}
+            data-export-ignore="true"
+            aria-label={recommended ? '取消推荐' : '推荐'}
+          >
+            <ThumbsUp className="w-2.5 h-2.5" />
+          </button>
+          <button
+            type="button"
+            onClick={handleNotRecommend}
+            className={cn(
+              "rounded-full p-0.5 shadow-sm border hover:shadow-md transition-all",
+              notRecommended 
+                ? "bg-black text-white border-black dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-100" 
+                : "bg-white/90 dark:bg-zinc-900/80 text-zinc-700 dark:text-zinc-200 border-zinc-100 dark:border-zinc-700"
+            )}
+            data-export-ignore="true"
+            aria-label={notRecommended ? '取消不推荐' : '不推荐'}
+          >
+            <ThumbsDown className="w-2.5 h-2.5" />
+          </button>
+        </div>
         <img
           src={subject.images.large || subject.images.common}
           alt={subject.name}
@@ -34,18 +85,18 @@ export function GameCard({ item }: GameCardProps) {
           )}
           loading="lazy"
         />
-        <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm text-white px-2 py-1 rounded-md text-sm font-bold flex items-center gap-1">
-          <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+        <div className="absolute top-1 right-1 bg-black/70 backdrop-blur-sm text-white px-1 py-0.5 rounded text-[10px] font-bold flex items-center gap-0.5">
+          <Star className="w-2 h-2 text-yellow-400 fill-yellow-400" />
           <span>{rate > 0 ? rate : '-'}</span>
         </div>
       </div>
       
-      <div className="p-4 flex flex-col flex-grow">
-        <div className="mb-2 space-y-1">
+      <div className="p-1.5 flex flex-col flex-grow">
+        <div className="mb-1 space-y-0.5">
           <div className="relative">
             <h3
               className={cn(
-                "font-bold text-lg leading-tight text-zinc-900 dark:text-zinc-100 line-clamp-2 transition-colors",
+                "font-bold text-xs leading-tight text-zinc-900 dark:text-zinc-100 line-clamp-2 transition-colors",
                 censored && "text-transparent select-none"
               )}
               title={subject.name}
@@ -67,7 +118,7 @@ export function GameCard({ item }: GameCardProps) {
           <div className="relative">
             <p
               className={cn(
-                "text-xs text-zinc-500 truncate transition-colors",
+                "text-[9px] text-zinc-500 truncate transition-colors",
                 censored && "text-transparent select-none"
               )}
             >
@@ -87,7 +138,7 @@ export function GameCard({ item }: GameCardProps) {
           </div>
         </div>
 
-        <div className="mt-auto pt-3 border-t border-zinc-100 dark:border-zinc-700 flex justify-between items-center text-xs text-zinc-400">
+        <div className="mt-auto pt-1.5 border-t border-zinc-100 dark:border-zinc-700 flex justify-between items-center text-[9px] text-zinc-400">
           <span>{format(date, 'yyyy-MM-dd')}</span>
         </div>
       </div>

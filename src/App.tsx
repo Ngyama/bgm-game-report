@@ -96,10 +96,12 @@ function UserGames() {
     }
   };
 
+  // 自动加载所有页面
   useEffect(() => {
-    if (hasNextPage && !isFetchingNextPage) {
+    if (hasNextPage && !isFetchingNextPage && !isLoading) {
+      fetchNextPage();
     }
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [hasNextPage, isFetchingNextPage, isLoading, fetchNextPage]);
 
   if (!username) {
     return (
@@ -186,7 +188,7 @@ function UserGames() {
                         {format(new Date(2025, month, 1), 'MMM')}
                       </h2>
                     </div>
-                    <div className="flex-grow grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
+                     <div className="flex-grow grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2">
                       {gamesByMonth[month].map(item => (
                         <GameCard key={`${item.subject_id}-${item.updated_at}`} item={item} />
                       ))}
@@ -195,15 +197,9 @@ function UserGames() {
                 ))}
             </div>
 
-            {hasNextPage && (
-                <div className="mt-12 text-center">
-                    <button
-                        onClick={() => fetchNextPage()}
-                        disabled={isFetchingNextPage}
-                        className="bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 px-8 py-3 rounded-full font-medium disabled:opacity-50 hover:opacity-90 transition-opacity"
-                    >
-                        {isFetchingNextPage ? 'Loading more...' : 'Load more history'}
-                    </button>
+            {isFetchingNextPage && (
+                <div className="mt-12 text-center text-zinc-500 text-sm">
+                    正在加载更多数据...
                 </div>
             )}
         </>
