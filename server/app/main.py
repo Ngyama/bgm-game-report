@@ -10,6 +10,7 @@ from typing import Any, Dict, List
 import httpx
 from dateutil import tz
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from html2image import Html2Image
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -26,13 +27,20 @@ env = Environment(
     autoescape=select_autoescape(["html", "xml"]),
 )
 
-# html2image 会自动下载 Chromium，添加 no-sandbox 方便容器部署
 hti = Html2Image(
     browser="chrome",
     custom_flags=["--no-sandbox", "--disable-dev-shm-usage"],
 )
 
 app = FastAPI(title="Bangumi Annual Report Exporter")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class ExportRequest(BaseModel):
@@ -168,6 +176,16 @@ async def render_image(username: str, year: int, months: List[Dict[str, Any]], t
             return image_path.read_bytes()
 
     return await loop.run_in_executor(None, _capture)
+
+
+@app.get("/")
+async def root():
+    return {"status": "ok", "message": "Bangumi Annual Report API"}
+
+
+@app.get("/health")
+async def health():
+    return {"status": "healthy"}
 
 
 @app.post("/export-image", summary="生成年度报告图片")

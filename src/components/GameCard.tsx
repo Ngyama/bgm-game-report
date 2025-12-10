@@ -18,14 +18,14 @@ export function GameCard({ item }: GameCardProps) {
   const handleRecommend = () => {
     setRecommended(prev => !prev);
     if (!recommended) {
-      setNotRecommended(false); // 取消不推荐
+      setNotRecommended(false); 
     }
   };
 
   const handleNotRecommend = () => {
     setNotRecommended(prev => !prev);
     if (!notRecommended) {
-      setRecommended(false); // 取消推荐
+      setRecommended(false); 
     }
   };
 

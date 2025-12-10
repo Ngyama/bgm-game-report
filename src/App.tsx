@@ -96,7 +96,6 @@ function UserGames() {
     }
   };
 
-  // 自动加载所有页面
   useEffect(() => {
     if (hasNextPage && !isFetchingNextPage && !isLoading) {
       fetchNextPage();
