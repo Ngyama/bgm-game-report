@@ -13,6 +13,21 @@ function UserGames() {
   const [isExporting, setIsExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
+
+  // 当 username 变化时，清空删除状态（每次加载都显示全部游戏）
+  useEffect(() => {
+    setDeletedIds(new Set());
+  }, [username]);
+
+  // 删除卡片的处理函数（只在当前会话有效，不持久化）
+  const handleDelete = (itemId: string) => {
+    setDeletedIds(prev => {
+      const newSet = new Set(prev);
+      newSet.add(itemId);
+      return newSet;
+    });
+  };
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -42,9 +57,13 @@ function UserGames() {
     
     return collectedGames.filter(item => {
       const date = new Date(item.updated_at);
-      return date.getFullYear() === 2025;
+      const year = date.getFullYear() === 2025;
+      // 排除已删除的卡片
+      const itemId = `${item.subject_id}-${item.updated_at}`;
+      const notDeleted = !deletedIds.has(itemId);
+      return year && notDeleted;
     });
-  }, [data]);
+  }, [data, deletedIds]);
 
   const gamesByMonth = useMemo(() => {
     const groups: Record<string, typeof games2025> = {};
@@ -188,9 +207,16 @@ function UserGames() {
                       </h2>
                     </div>
                      <div className="flex-grow grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2">
-                      {gamesByMonth[month].map(item => (
-                        <GameCard key={`${item.subject_id}-${item.updated_at}`} item={item} />
-                      ))}
+                      {gamesByMonth[month].map(item => {
+                        const itemId = `${item.subject_id}-${item.updated_at}`;
+                        return (
+                          <GameCard 
+                            key={itemId} 
+                            item={item} 
+                            onDelete={() => handleDelete(itemId)}
+                          />
+                        );
+                      })}
                     </div>
                   </div>
                 ))}
