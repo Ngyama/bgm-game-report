@@ -28,7 +28,8 @@ env = Environment(
 )
 
 hti = Html2Image(
-    browser="chrome",
+    browser="chromium",
+    executable_path="/usr/bin/chromium",
     custom_flags=["--no-sandbox", "--disable-dev-shm-usage"],
 )
 

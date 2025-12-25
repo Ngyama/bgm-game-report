@@ -6,6 +6,8 @@ ENV PYTHONUNBUFFERED=1
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     fonts-wqy-zenhei \
+    chromium \
+    chromium-driver \
     libnss3 \
     libxss1 \
     libasound2 \
@@ -19,6 +21,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgtk-3-0 \
     libxrandr2 \
     && rm -rf /var/lib/apt/lists/*
+
+# 设置 Chromium 路径环境变量
+ENV CHROMIUM_PATH=/usr/bin/chromium
+ENV CHROME_PATH=/usr/bin/chromium
 
 WORKDIR /app
 
