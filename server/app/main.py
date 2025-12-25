@@ -27,11 +27,21 @@ env = Environment(
     autoescape=select_autoescape(["html", "xml"]),
 )
 
-hti = Html2Image(
-    browser="chromium",
-    executable_path="/usr/bin/chromium",
-    custom_flags=["--no-sandbox", "--disable-dev-shm-usage"],
-)
+# 延迟初始化 hti，在首次使用时创建
+hti: Html2Image | None = None
+
+
+def get_hti() -> Html2Image:
+    """获取或创建 Html2Image 实例"""
+    global hti
+    if hti is None:
+        # html2image 库会自动查找系统安装的 chromium
+        # 由于我们在 Dockerfile 中创建了符号链接，库应该能找到
+        hti = Html2Image(
+            browser="chromium",
+            custom_flags=["--no-sandbox", "--disable-dev-shm-usage"],
+        )
+    return hti
 
 app = FastAPI(title="Bangumi Annual Report Exporter")
 
@@ -167,8 +177,9 @@ async def render_image(username: str, year: int, months: List[Dict[str, Any]], t
 
         with TemporaryDirectory() as tmp:
             file_name = f"report-{uuid4().hex}.png"
-            hti.output_path = tmp
-            hti.screenshot(
+            hti_instance = get_hti()
+            hti_instance.output_path = tmp
+            hti_instance.screenshot(
                 html_str=html,
                 save_as=file_name,
                 size=(1600, 0),

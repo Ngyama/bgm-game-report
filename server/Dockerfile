@@ -26,6 +26,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV CHROMIUM_PATH=/usr/bin/chromium
 ENV CHROME_PATH=/usr/bin/chromium
 
+# 创建符号链接，确保 html2image 能找到 chromium
+RUN ln -sf /usr/bin/chromium /usr/bin/chromium-browser || true
+RUN ln -sf /usr/bin/chromium /usr/bin/google-chrome || true
+
 WORKDIR /app
 
 COPY requirements.txt .
