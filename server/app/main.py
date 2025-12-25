@@ -195,7 +195,7 @@ async def render_image(username: str, year: int, months: List[Dict[str, Any]], t
             hti_instance.screenshot(
                 html_str=html,
                 save_as=file_name,
-                size=(1600, 0),
+                size=(1600, 2400),  # 宽度 1600px，高度 2400px（可根据内容调整）
             )
             image_path = Path(tmp) / file_name
             return image_path.read_bytes()
