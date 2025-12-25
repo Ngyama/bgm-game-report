@@ -149,11 +149,24 @@ def group_by_month(entries: List[GameEntry]) -> List[Dict[str, Any]]:
 
     result = []
     for month in sorted(grouped.keys(), reverse=True):
+        # 将 GameEntry 转换为字典，方便 Jinja2 模板访问
+        items_dict = [
+            {
+                "subject_id": entry.subject_id,
+                "name": entry.name,
+                "name_cn": entry.name_cn,
+                "image": entry.image,
+                "updated_at": entry.updated_at,
+                "updated_at_formatted": entry.updated_at.strftime("%m-%d"),
+                "score": entry.score,
+            }
+            for entry in grouped[month]
+        ]
         result.append(
             {
                 "month": month,
                 "label": f"{month:02d}",
-                "items": grouped[month],
+                "items": items_dict,
             }
         )
     return result

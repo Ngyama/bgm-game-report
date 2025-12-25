@@ -131,7 +131,7 @@
         <div class="month-block">
           <div class="month-label">{{ month.label }}</div>
           <div class="cards">
-            {% for item in month.items %}
+            {% for item in month['items'] %}
             <div class="card">
               <img src="{{ item.image }}" alt="{{ item.name or item.name_cn }}" />
               <div class="card-body">
@@ -142,7 +142,7 @@
                   {% endif %}
                 </div>
                 <div class="meta">
-                  <span>{{ item.updated_at.strftime("%m-%d") }}</span>
+                  <span>{{ item.updated_at_formatted }}</span>
                   <span>评分 {{ item.score }}</span>
                 </div>
               </div>
