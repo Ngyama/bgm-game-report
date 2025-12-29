@@ -118,8 +118,8 @@ export function GameCard({ item, onDelete }: GameCardProps) {
               )}
               title={subject.name}
             >
-              {subject.name_cn || subject.name}
-            </h3>
+            {subject.name_cn || subject.name}
+          </h3>
             {censored && (
               <span
                 className="absolute inset-0 opacity-80 pointer-events-none rounded-md"

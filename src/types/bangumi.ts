@@ -21,7 +21,7 @@ export interface BangumiCollectionItem {
   subject_id: number;
   subject_type: number;
   rate: number;
-  type: number; // 1: 想玩, 2: 玩过, 3: 在玩, 4: 搁置, 5: 抛弃
+  type: number;
   comment: string;
   tags: string[];
   ep_status: number;

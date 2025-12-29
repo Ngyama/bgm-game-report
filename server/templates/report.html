@@ -17,22 +17,23 @@
       }
 
       .container {
-        max-width: 1400px;
+        width: 1500px; /* Fixed width matching frontend design */
         margin: 0 auto;
         background: #fff;
-        border-radius: 32px;
-        padding: 48px;
+        border-radius: 24px;
+        padding: 32px; /* reduced padding */
         box-shadow: 0 30px 80px rgba(15, 23, 42, 0.12);
         border: 1px solid rgba(99, 102, 241, 0.1);
+        overflow: hidden; /* Ensure content doesn't spill */
       }
 
       header {
         text-align: center;
-        margin-bottom: 48px;
+        margin-bottom: 32px;
       }
 
       header h1 {
-        font-size: 40px;
+        font-size: 36px; /* slightly smaller */
         margin-bottom: 8px;
         background: linear-gradient(135deg, #ec4899, #6366f1);
         -webkit-background-clip: text;
@@ -42,72 +43,102 @@
       header p {
         margin: 4px 0;
         color: #6b7280;
+        font-size: 18px;
+      }
+      
+      .generated-time {
+          font-size: 14px;
+          color: #9ca3af;
       }
 
       .months {
         display: flex;
         flex-direction: column;
-        gap: 32px;
+        gap: 24px; /* Reduced gap */
       }
 
       .month-block {
         display: grid;
-        grid-template-columns: 100px 1fr;
+        grid-template-columns: 80px 1fr; /* Narrower label column */
         gap: 16px;
         align-items: start;
       }
 
       .month-label {
-        font-size: 54px;
+        font-size: 48px;
         font-weight: 700;
         color: rgba(148, 163, 184, 0.8);
         letter-spacing: 2px;
+        text-align: center;
+        padding-top: 4px;
       }
 
       .cards {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        gap: 16px;
+        grid-template-columns: repeat(10, 1fr); /* Fixed 10 columns */
+        gap: 12px; /* Reduced gap */
       }
 
       .card {
-        border-radius: 20px;
+        border-radius: 12px; /* Smaller radius */
         overflow: hidden;
         border: 1px solid rgba(226, 232, 240, 0.8);
         background: #fff;
-        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        box-shadow: 0 4px 6px rgba(15, 23, 42, 0.05);
+        height: 300px; /* Fixed compact height */
+        display: flex;
+        flex-direction: column;
       }
 
       .card img {
         width: 100%;
-        height: 220px;
+        height: 200px; /* Fixed image height (2:3 approx for small width) */
         object-fit: cover;
         display: block;
+        flex-shrink: 0;
       }
 
       .card-body {
-        padding: 12px 14px 16px;
+        padding: 8px 10px 10px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
       }
 
       .title {
         font-weight: 600;
-        font-size: 16px;
+        font-size: 13px; /* Smaller font */
         line-height: 1.3;
-        margin-bottom: 4px;
-      }
-
-      .subtitle {
-        font-size: 12px;
-        color: #94a3b8;
-        margin-bottom: 12px;
+        color: #1f2937;
+        margin-bottom: 2px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .meta {
         display: flex;
         justify-content: space-between;
-        font-size: 11px;
-        color: #cbd5f5;
+        align-items: center;
+        font-size: 10px;
         color: #94a3b8;
+      }
+      
+      .score {
+          display: flex;
+          align-items: center;
+          gap: 2px;
+          color: #eab308;
+          font-weight: 700;
+      }
+      
+      .score svg {
+          width: 12px;
+          height: 12px;
+          fill: currentColor;
       }
 
       footer {
@@ -123,7 +154,7 @@
       <header>
         <h1>{{ year }} · Gaming Year</h1>
         <p>@{{ username }} · 共标记 {{ total }} 款游戏</p>
-        <p>生成时间：{{ generated_at }}</p>
+        <p class="generated-time">生成时间：{{ generated_at }}</p>
       </header>
 
       <section class="months">
@@ -133,17 +164,17 @@
           <div class="cards">
             {% for item in month['items'] %}
             <div class="card">
-              <img src="{{ item.image }}" alt="{{ item.name or item.name_cn }}" />
+              <img src="{{ item.image }}" alt="{{ item.name or item.name_cn }}" loading="eager" />
               <div class="card-body">
                 <div class="title">{{ item.name_cn or item.name }}</div>
-                <div class="subtitle">
-                  {% if item.name != item.name_cn %}
-                    {{ item.name }}
-                  {% endif %}
-                </div>
                 <div class="meta">
                   <span>{{ item.updated_at_formatted }}</span>
-                  <span>评分 {{ item.score }}</span>
+                  {% if item.score > 0 %}
+                  <div class="score">
+                      <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                      {{ item.score }}
+                  </div>
+                  {% endif %}
                 </div>
               </div>
             </div>
@@ -153,8 +184,7 @@
         {% endfor %}
       </section>
 
-      <footer>Bangumi Annual Report Experimental Exporter</footer>
+      <footer>Bangumi Annual Report Generator</footer>
     </div>
   </body>
 </html>
-
