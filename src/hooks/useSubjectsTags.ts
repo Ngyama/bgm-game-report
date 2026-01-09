@@ -88,7 +88,7 @@ async function fetchSubjectDetails(subjectId: number): Promise<SubjectDetail> {
     const data = await res.json();
     
     const tags = (data.tags || [])
-      .slice(0, 10) 
+      .slice(0, 10)
       .map((t: any) => t.name);
       
     const platform = data.platform || 'Unknown';
@@ -98,7 +98,6 @@ async function fetchSubjectDetails(subjectId: number): Promise<SubjectDetail> {
     localStorage.setItem(cacheKey, JSON.stringify(result));
     return result;
   } catch (error) {
-    console.warn(`Failed to fetch details for subject ${subjectId}`, error);
     return { tags: [], platform: 'Unknown', infobox: { developers: [], scenarists: [] } };
   }
 }

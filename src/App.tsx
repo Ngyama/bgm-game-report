@@ -17,8 +17,6 @@ import { cn, getProxiedUrl } from './lib/utils';
 import { toPng } from 'html-to-image';
 import { BangumiCollectionItem } from './types/bangumi';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
 const queryClient = new QueryClient();
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean, error: Error | null }> {
@@ -31,8 +29,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("Uncaught error:", error, errorInfo);
+  componentDidCatch(_error: Error, _errorInfo: ErrorInfo) {
   }
 
   render() {
@@ -201,19 +198,6 @@ function UserGames() {
 
   const summaryGameIds = useMemo(() => summaryGames.map(g => g.subject_id), [summaryGames]);
 
-  const summaryMonthlyCounts = useMemo(() => {
-    const counts = Array.from({ length: 12 }, (_, idx) => ({
-        month: idx + 1,
-        label: `${idx + 1}月`,
-        count: 0,
-    }));
-    summaryGames.forEach(item => {
-        const month = new Date(item.updated_at).getMonth();
-        counts[month].count += 1;
-    });
-    return counts;
-  }, [summaryGames]);
-
   const radarData = useMemo(() => {
     if (!detailMap) return undefined;
     if (summaryMode === 'all') {
@@ -251,6 +235,14 @@ function UserGames() {
       .map(Number)
       .sort((a, b) => b - a); 
   }, [gamesByMonth]);
+
+  const monthlyCounts = useMemo(() => {
+    return sortedMonths.map(month => ({
+      month,
+      label: `${month}月`,
+      count: gamesByMonth[String(month)].length
+    }));
+  }, [sortedMonths, gamesByMonth]);
 
   useEffect(() => {
     setDeletedIds(new Set());
@@ -296,7 +288,6 @@ function UserGames() {
                 });
                 img.src = dataUrl;
             } catch (e) {
-                console.warn('Inline image failed, keep original src', e);
             }
         }));
 
@@ -317,7 +308,6 @@ function UserGames() {
         link.click();
         document.body.removeChild(link);
     } catch (err) {
-      console.error('Failed to export image', err);
       setExportError(err instanceof Error ? err.message : '导出失败，请稍后重试');
     } finally {
       setIsExporting(false);
@@ -452,12 +442,12 @@ function UserGames() {
         <>
           <header className="mb-12 text-center">
             <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-600 mb-4">
-              2025 年度游戏列表
+              2025 Gaming Year
             </h1>
             <div className="flex items-center justify-center gap-2 text-zinc-500">
               <span className="font-semibold text-zinc-800 dark:text-zinc-200">@{username}</span>
               <span>•</span>
-              <span>共标记 {games2025.length} 款</span>
+              <span>{games2025.length} Games Marked</span>
             </div>
           </header>
 
@@ -501,7 +491,7 @@ function UserGames() {
           staffStats={staffStats}
           summaryMode={summaryMode}
           onToggleMode={() => setSummaryMode(prev => prev === 'all' ? 'galgame' : 'all')}
-          monthlyCounts={summaryMonthlyCounts}
+          monthlyCounts={monthlyCounts}
         />
       )}
       </div>

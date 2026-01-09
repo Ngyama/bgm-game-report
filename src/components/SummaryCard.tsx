@@ -1,15 +1,15 @@
-import React, { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { 
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid
 } from 'recharts';
-import { Trophy, Calendar, Star, TrendingUp, User, Quote, ThumbsDown, ThumbsUp, Gamepad2, Monitor, RefreshCw, BookOpen, PenTool, Building2, ImageDown, Loader2 } from 'lucide-react';
+import { Calendar, Star, TrendingUp, User, ThumbsDown, ThumbsUp, Gamepad2, Monitor, BookOpen, PenTool, Building2, ImageDown, Loader2 } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { BangumiCollectionItem } from '../types/bangumi';
 import { BangumiUser } from '../hooks/useBangumiUser';
 import { cn } from '../lib/utils';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:8000';
 
 const getProxiedUrl = (url?: string) => {
     if (!url) return '';
@@ -159,7 +159,6 @@ export function SummaryCard({
         link.href = dataUrl;
         link.click();
     } catch (err) {
-        console.error('Export failed', err);
         alert('导出失败，请重试');
     } finally {
         setIsExporting(false);
@@ -301,7 +300,7 @@ export function SummaryCard({
                                                 <Building2 className="w-3 h-3" /> 厂牌 TOP3
                                             </h4>
                                             <div className="space-y-2">
-                                                {staffStats.topDevelopers.map(([name, count], idx) => (
+                                                {staffStats.topDevelopers.map(([name, count]) => (
                                                     <div key={name} className="flex justify-between items-center text-sm">
                                                          <span className="font-bold text-zinc-700 dark:text-zinc-200 truncate pr-2">{name}</span>
                                                          <span className="font-mono text-zinc-400 text-xs">x{count}</span>
@@ -316,7 +315,7 @@ export function SummaryCard({
                                                 <PenTool className="w-3 h-3" /> 剧本 TOP3
                                             </h4>
                                             <div className="space-y-2">
-                                                {staffStats.topScenarists.map(([name, count], idx) => (
+                                                {staffStats.topScenarists.map(([name, count]) => (
                                                     <div key={name} className="flex justify-between items-center text-sm">
                                                          <span className="font-bold text-zinc-700 dark:text-zinc-200 truncate pr-2">{name}</span>
                                                          <span className="font-mono text-zinc-400 text-xs">x{count}</span>
@@ -425,7 +424,7 @@ export function SummaryCard({
                                 <h3 className="text-xl font-bold text-zinc-600 dark:text-zinc-400">年度黑榜</h3>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-[2rem] p-4 border border-zinc-100 dark:border-zinc-800">
-                                {bottom3.map((game, idx) => (
+                                {bottom3.map((game) => (
                                     <div key={game.subject_id} className="group relative overflow-hidden bg-white dark:bg-zinc-800 p-2 rounded-xl flex items-center gap-3 border border-zinc-200 dark:border-zinc-700 opacity-80 hover:opacity-100 transition-all shadow-sm">
                                         <div className="w-10 h-14 rounded-lg bg-zinc-200 overflow-hidden flex-shrink-0 grayscale shadow-sm">
                                             <img src={getProxiedUrl(game.subject?.images?.common)} className="w-full h-full object-cover" alt="" crossOrigin="anonymous" />
