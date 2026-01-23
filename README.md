@@ -12,17 +12,7 @@
 
 一个为 Bangumi 用户生成个性化年度游戏收藏数据分析报告的 Web 应用。
 
-<table align="center">
-<tr>
-<td align="center" style="border: 2px solid #ff9800; padding: 15px; background-color: #fff3cd; border-radius: 8px;">
-
-⚠️ **服务状态提示**  
-**本网站于 2025 年底部署上线，现已为节约成本暂时下线**  
-如需体验，请参考下方本地运行说明
-
-</td>
-</tr>
-</table>
+> ⚠️ **本网站于 2025 年底部署上线，现已为节约成本暂时下线**
 
 ## 📊 项目简介
 
@@ -40,7 +30,6 @@
 
 - **前端**: React 19 + TypeScript + Tailwind CSS
 - **数据可视化**: Recharts
-- **状态管理**: TanStack Query (React Query)
 - **后端**: Python + FastAPI
 
 ---
@@ -53,17 +42,7 @@
 
 A web application that generates personalized annual game collection data analysis reports for Bangumi users.
 
-<table align="center">
-<tr>
-<td align="center" style="border: 2px solid #ff9800; padding: 15px; background-color: #fff3cd; border-radius: 8px;">
-
-⚠️ **Service Status Notice**  
-**This website was deployed in late 2025 and has been temporarily taken offline to reduce costs**  
-For local testing, please refer to the local setup instructions below
-
-</td>
-</tr>
-</table>
+> ⚠️ **This website was deployed in late 2025 and has been temporarily taken offline to reduce costs**
 
 ## 📊 Project Overview
 
@@ -81,7 +60,6 @@ This project analyzes Bangumi users' game collection data and automatically gene
 
 - **Frontend**: React 19 + TypeScript + Tailwind CSS
 - **Data Visualization**: Recharts
-- **State Management**: TanStack Query (React Query)
 - **Backend**: Python + FastAPI
 
 ---
